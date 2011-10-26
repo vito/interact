@@ -459,10 +459,17 @@ module Interactive
     end
   end
 
-  # Ask a question and get an answer. Rewind-aware; set +forget+ to +false+
-  # in +options+ or call +disable_rewind+ on your class to disable.
+  # Ask a question and get an answer. Rewind-aware; call +disable_rewind+ on
+  # your class to disable.
   #
   # See Interact#ask for the other possible values in +options+.
+  #
+  # [question] The prompt, without ": " at the end.
+  #
+  # [options] An optional hash containing the following options.
+  #
+  # forget::
+  #   Set to +true+ to prevent rewinding from remembering the user's answer.
   def ask(question, options = {}, &callback)
     rewind = Interact::HAS_CALLCC && rewind_enabled?
 
