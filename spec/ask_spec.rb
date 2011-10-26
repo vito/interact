@@ -65,7 +65,7 @@ describe "ask" do
     end
 
     it "allows overriding input events" do
-      callback = proc do |x, ans, pos, echo|
+      callback = proc do |x, ans, pos, opts|
         if x.is_a?(Array) and x[0] == :key
           ans << x[1].upcase
           print x[1].upcase
