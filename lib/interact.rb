@@ -239,7 +239,7 @@ module Interact
     when false
       msg << " [yN]"
     else
-      msg << " [#{default.inspect}]" if default
+      msg << " [#{default}]" if default
     end
 
     print "#{msg}: "
