@@ -53,7 +53,7 @@ describe "ask" do
     it "accepts blank lines if a default is provided; returns default" do
       ask_faked("\n\nfoo\n", "Foo?", :default => "bar") do |x|
         x.answer.should == "bar"
-        x.output.should == "Foo? [\"bar\"]: \n"
+        x.output.should == "Foo? [bar]: \n"
       end
     end
 
@@ -126,14 +126,14 @@ describe "ask" do
     it "can provide a set of choices to the user" do
       ask_faked("A\n", "Favorite letter?", :choices => "A".."C") do |x|
         x.answer.should == "A"
-        x.output.should == "Favorite letter? (\"A\", \"B\", \"C\"): A\n"
+        x.output.should == "Favorite letter? (A, B, C): A\n"
       end
     end
 
     it "repeats the question if blank line received with no default" do
       ask_faked("\nA\n", "Favorite letter?", :choices => "A".."C") do |x|
         x.answer.should == "A"
-        x.output.should == "Favorite letter? (\"A\", \"B\", \"C\"): \nFavorite letter? (\"A\", \"B\", \"C\"): A\n"
+        x.output.should == "Favorite letter? (A, B, C): \nFavorite letter? (A, B, C): A\n"
       end
     end
 
@@ -141,7 +141,7 @@ describe "ask" do
       ask_faked("A\n", "Favorite letter?",
                 :choices => "A".."C", :default => "C") do |x|
         x.answer.should == "A"
-        x.output.should == "Favorite letter? (\"A\", \"B\", \"C\") [\"C\"]: A\n"
+        x.output.should == "Favorite letter? (A, B, C) [C]: A\n"
       end
     end
 
@@ -149,26 +149,26 @@ describe "ask" do
       ask_faked("\nA\n", "Favorite letter?",
                 :choices => "A".."C", :default => "C") do |x|
         x.answer.should == "C"
-        x.output.should == "Favorite letter? (\"A\", \"B\", \"C\") [\"C\"]: \n"
+        x.output.should == "Favorite letter? (A, B, C) [C]: \n"
       end
     end
 
     it "performs basic autocompletion" do
       ask_faked("c\n", "Foo?", :choices => %w{aa ba ca}) do |x|
         x.answer.should == "ca"
-        x.output.should == "Foo? (\"aa\", \"ba\", \"ca\"): c\n"
+        x.output.should == "Foo? (aa, ba, ca): c\n"
       end
 
       ask_faked("cb\n", "Foo?", :choices => %w{aa ba caa cba}) do |x|
         x.answer.should == "cba"
-        x.output.should == "Foo? (\"aa\", \"ba\", \"caa\", \"cba\"): cb\n"
+        x.output.should == "Foo? (aa, ba, caa, cba): cb\n"
       end
     end
 
     it "complains if there is any ambiguity and repeats the question" do
       ask_faked("c\nca\n", "Foo?", :choices => %w{aa ba caa cba}) do |x|
         x.answer.should == "caa"
-        x.output.should == "Foo? (\"aa\", \"ba\", \"caa\", \"cba\"): c\nPlease disambiguate: caa or cba?\nFoo? (\"aa\", \"ba\", \"caa\", \"cba\"): ca\n"
+        x.output.should == "Foo? (aa, ba, caa, cba): c\nPlease disambiguate: caa or cba?\nFoo? (aa, ba, caa, cba): ca\n"
       end
     end
 
@@ -188,7 +188,7 @@ describe "ask" do
       ask_faked("\n", "Foo?",
                 :choices => "A".."C", :indexed => true, :default => "C") do |x|
         x.answer.should == "C"
-        x.output.should == "1: A\n2: B\n3: C\nFoo? [\"C\"]: \n"
+        x.output.should == "1: A\n2: B\n3: C\nFoo? [C]: \n"
       end
 
       ask_faked("\nC\n", "Foo?",
