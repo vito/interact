@@ -80,17 +80,20 @@ if they rewind.
 
 ## Disabling Rewinding
 
-Interact provides a nifty user-friendly "rewinding" feature, which allows the user to go back in time and re-answer a question. If you don't want this feature, simply set `@@allow_rewind` to `false` in your class.
+Interact provides a nifty user-friendly "rewinding" feature, which allows the
+user to go back in time and re-answer a question. If you don't want this
+feature, simply call `disable_rewind` in your class. You can re-enable it with
+`enable_rewind` in subclasses.
 
 ```ruby
 class NoRewind
   include Interactive
-  @@allow_rewind = false
+  disable_rewind
 
   def run
     res = ask "Is there no return?", :default => true
 
-    if res == allow_rewind
+    if res == rewind_enabled?
       puts "You're right!"
     else
       puts "Nope! It's disabled."

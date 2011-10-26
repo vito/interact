@@ -328,16 +328,30 @@ module Interact
 end
 
 module Interactive
-  # Allow classes to disable the rewind feature via the +allow_rewind+ class
-  # variable.
+  # Allow classes to enable/disable the rewind feature via +disable_rewind+
+  # and +enable_rewind+.
   def self.included klass
-    klass.send :class_variable_set, :@@allow_rewind, true
+    class << klass
+      def disable_rewind
+        def self.rewind_enabled?
+          false
+        end
+      end
+
+      def enable_rewind
+        def self.rewind_enabled?
+          true
+        end
+      end
+
+      def rewind_enabled?
+        true
+      end
+    end
 
     klass.class_eval do
-      # Accessor for the +allow_rewind+ class variable, which determines
-      # whether to enable the rewinding feature.
-      def allow_rewind
-        self.class.send :class_variable_get, :@@allow_rewind
+      def rewind_enabled?
+        self.class.rewind_enabled?
       end
     end
   end
@@ -385,7 +399,7 @@ module Interactive
   #   The block should return the updated +position+, or +nil+ if it didn't
   #   handle the event
   def ask(question, options = {})
-    rewind = Interact::HAS_CALLCC && allow_rewind
+    rewind = Interact::HAS_CALLCC && rewind_enabled?
 
     if rewind
       prompt, answer = callcc { |cc| [cc, nil] }
