@@ -172,7 +172,7 @@ module Interact
         print "\n"
 
         if ans.empty?
-          return default if default.nil?
+          return default unless default.nil?
         elsif choices
           matches = choices.select { |x| x.start_with? ans }
 
