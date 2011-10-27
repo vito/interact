@@ -65,11 +65,11 @@ describe "ask" do
     end
 
     it "allows overriding input events" do
-      callback = proc do |x, ans, pos, opts|
+      callback = proc do |x, st|
         if x.is_a?(Array) and x[0] == :key
-          ans << x[1].upcase
+          st.answer << x[1].upcase
           print x[1].upcase
-          pos + 1
+          st.position += 1
         end
       end
 

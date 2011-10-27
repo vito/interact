@@ -37,17 +37,40 @@ module Interact
     "[F" => :end, "O" => :end
   }
 
-  # Used internally to clean up input state before jumping to another prompt.
-  class JumpToPrompt < Exception
+  class JumpToPrompt < Exception #:nodoc:
     def initialize(prompt)
       @prompt = prompt
     end
 
-    # Print an empty line and jump to the prompt. This is typically called
-    # after the user has pressed the up arrow.
     def jump
       print "\n"
       @prompt[0].call(@prompt)
+    end
+  end
+
+  # Wrap around the input options, the current answer, and the current
+  # position.
+  #
+  # Passed to handlers, which are expected to mutate +answer+ and +position+
+  # as they handle incoming events.
+  class InputState
+    attr_accessor :options, :answer, :position
+
+    def initialize(options = {}, answer = "", position = 0)
+      @options = options
+      @answer = answer
+      @position = position
+      @done = false
+    end
+
+    # Call to signal to the input reader that it can stop.
+    def done!
+      @done = true
+    end
+
+    # Is the input finished/complete?
+    def done?
+      @done
     end
   end
 
@@ -104,34 +127,26 @@ module Interact
     # callback::
     #   A block used to override certain actions.
     #
-    #   The block should take 4 arguments:
+    #   The block should take two arguments:
     #
     #   - the event, e.g. <code>:up</code> or <code>[:key, X]</code> where
     #     +X+ is a string containing a single character
-    #   - the current answer to the question; you'll probably mutate this
-    #   - the current offset from the start of the answer string, e.g. when
-    #     typing in the middle of the input, this will be where you insert
-    #     characters
-    #   - the +options+ passed to this method
+    #   - the +InputState+
     #
-    #   The block should return the updated position, +nil+ if it didn't
-    #   handle the event, or +false+ if it should stop reading.
+    #   The block should mutate the given state, and return +true+ if it
+    #   handled the event or +false+ if it didn't.
     def read_line(options = {}, &callback)
       input = options[:input] || $stdin
       callback ||= options[:callback]
 
-      ans = ""
-      pos = 0
-      escaped = false
-      escape_seq = ""
-
+      state = InputState.new(options)
       with_char_io(input) do
-        until pos == false or (e = get_event(input)) == :enter
-          pos = handler(e, ans, pos, options, &callback)
+        until state.done?
+          handler(get_event(input), state, &callback)
         end
       end
 
-      ans
+      state.answer
     end
 
     # Ask a question and get an answer.
@@ -221,14 +236,17 @@ module Interact
       end
     end
 
-    def handler(which, ans, pos, options = {})
+    def handler(which, state)
       if block_given?
-        res = yield which, ans, pos, options
-        return res unless res.nil?
+        res = yield which, state
+        return if res
       end
 
-      echo = options[:echo]
-      prompts = options[:prompts] || []
+      echo = state.options[:echo]
+      prompts = state.options[:prompts] || []
+
+      ans = state.answer
+      pos = state.position
 
       case which
       when :up
@@ -245,13 +263,13 @@ module Interact
       when :right
         unless pos == ans.size
           print censor(ans[pos .. pos], echo)
-          return pos + 1
+          state.position += 1
         end
 
       when :left
-        unless pos == 0
+        unless position == 0
           print "\b"
-          return pos - 1
+          state.position -= 1
         end
 
       when :delete
@@ -267,11 +285,11 @@ module Interact
 
       when :home
         print("\b" * pos)
-        return 0
+        state.position = 0
 
       when :end
         print(censor(ans[pos .. -1], echo))
-        return ans.size
+        state.position = ans.size
 
       when :backspace
         if pos > 0
@@ -284,14 +302,14 @@ module Interact
             print("\b\e[P")
           end
 
-          return pos - 1
+          state.position -= 1
         end
 
       when :interrupt
         raise Interrupt.new
 
       when :eof
-        return false if ans.empty?
+        state.done! if ans.empty?
 
       when :kill_word
         if pos > 0
@@ -299,11 +317,11 @@ module Interact
           length = pos - start
           ans.slice!(start, length)
           print("\b" * length + " " * length + "\b" * length)
-          return start
+          state.position = start
         end
 
       when :enter
-        return false
+        state.done!
 
       when Array
         case which[0]
@@ -315,11 +333,14 @@ module Interact
 
           print(censor(c + rest, echo) + ("\b" * rest.size))
 
-          return pos + 1
+          state.position += 1
         end
+
+      else
+        return false
       end
 
-      pos
+      true
     end
 
     def censor(str, with)
