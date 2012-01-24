@@ -258,6 +258,21 @@ module Interact
         # nothing
 
       when :tab
+        if choices = state.options[:choices]
+          matches = choices.select do |c|
+            c.start_with? ans
+          end
+
+          if matches.size == 1
+            ans = state.answer = matches[0]
+            print(ans[pos .. -1])
+            pos = state.position = ans.size
+          else
+            print("\a") # bell
+          end
+        else
+          print("\a") # bell
+        end
         # nothing
 
       when :right
