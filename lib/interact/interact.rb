@@ -259,9 +259,7 @@ module Interact
 
       when :tab
         if choices = state.options[:choices]
-          matches = choices.select do |c|
-            c.start_with? ans
-          end
+          matches = choices.select { |c| c.start_with? ans }
 
           if matches.size == 1
             ans = state.answer = matches[0]
@@ -273,7 +271,6 @@ module Interact
         else
           print("\a") # bell
         end
-        # nothing
 
       when :right
         unless pos == ans.size
@@ -282,7 +279,7 @@ module Interact
         end
 
       when :left
-        unless position == 0
+        unless pos == 0
           print "\b"
           state.position -= 1
         end
