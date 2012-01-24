@@ -51,10 +51,8 @@ module Interactive
       prompt, answer = nil, nil
     end
 
-    if answer.nil?
-      default = options[:default]
-    else
-      default = answer
+    if answer
+      options[:default] = answer
     end
 
     prompts = (@__prompts ||= [])
