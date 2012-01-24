@@ -23,6 +23,8 @@ module Interactive
     end
 
     klass.class_eval do
+      private
+
       def rewind_enabled?
         self.class.rewind_enabled?
       end
