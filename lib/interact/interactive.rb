@@ -343,7 +343,7 @@ module Interactive
 
     when :kill_word
       if pos > 0
-        start = /[^\s]*\s*$/ =~ ans[0 .. (pos - 1)]
+        start = /[[:alnum:]]*\s*[^[:alnum:]]?$/ =~ ans[0 .. (pos - 1)]
 
         if pos < ans.size
           to_end = ans.size - pos
