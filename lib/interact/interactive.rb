@@ -171,7 +171,7 @@ module Interactive
   def ask(question, options = {})
     choices = options[:choices] && options[:choices].to_a
 
-    list_choices(choices, options)
+    list_choices(choices, options) if choices
 
     while true
       prompt(question, options)
@@ -264,7 +264,7 @@ module Interactive
   end
 
   def list_choices(choices, options = {})
-    return unless choices and options[:indexed]
+    return unless options[:indexed]
 
     choices.each_with_index do |o, i|
       puts "#{i + 1}: #{o}"
