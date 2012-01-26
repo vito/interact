@@ -30,7 +30,7 @@ class Interaction
   include Interactive
 end
 
-describe "ask" do
+describe "asking" do
   before(:each) do
     $interaction = Interaction.new
   end
@@ -61,21 +61,6 @@ describe "ask" do
       ask_faked("fizzbuzz\n", "Foo?", :echo => "*") do |x|
         x.answer.should == "fizzbuzz"
         x.output.should == "Foo?: ********\n"
-      end
-    end
-
-    it "allows overriding input events" do
-      callback = proc do |x, st|
-        if x.is_a?(Array) and x[0] == :key
-          st.answer << x[1].upcase
-          print x[1].upcase
-          st.position += 1
-        end
-      end
-
-      ask_faked("fizzbuzz\n", "Foo?", :callback => callback) do |x|
-        x.answer.should == "FIZZBUZZ"
-        x.output.should == "Foo?: FIZZBUZZ\n"
       end
     end
 
