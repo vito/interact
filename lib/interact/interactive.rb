@@ -195,8 +195,10 @@ module Interactive
   end
 
   def redraw_input(state)
+    pos = state.position
     state.goto(0)
     state.display(state.answer)
+    state.goto(pos)
   end
 
   def input_state(options)
