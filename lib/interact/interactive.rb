@@ -49,10 +49,6 @@ module Interactive
       @done
     end
 
-    def char_size
-      @options[:echo] ? @options[:echo].size : 1
-    end
-
     def censor(what)
       if with = @options[:echo]
         with * what.size
@@ -90,10 +86,16 @@ module Interactive
       if pos > position
         display(answer[position .. pos])
       else
-        print("\b" * (position - pos))
+        print("\b" * (position - pos) * char_size)
       end
 
       @position = pos
+    end
+
+    private
+
+    def char_size
+      @options[:echo] ? @options[:echo].size : 1
     end
   end
 
