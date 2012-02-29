@@ -21,7 +21,8 @@ module Interactive
     "[D" => :left, "K" => :left,
     "[3~" => :delete, "S" => :delete,
     "[H" => :home, "G" => :home,
-    "[F" => :end, "O" => :end
+    "[F" => :end, "O" => :end,
+    "[Z" => :shift_tab
   }
 
   # Wrap around the input options, the current answer, and the current

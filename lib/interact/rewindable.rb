@@ -76,7 +76,7 @@ module Interactive::Rewindable
     prompts = state.options[:prompts] || []
 
     case which
-    when :up
+    when :up, :shift_tab
       if back = prompts.pop
         raise JumpToPrompt, back
       end
