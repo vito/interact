@@ -1,6 +1,6 @@
 $:.unshift File.expand_path("../lib", __FILE__)
 
-require 'version'
+require 'interact/version'
 
 spec = Gem::Specification.new do |s|
   s.name = "interact"
