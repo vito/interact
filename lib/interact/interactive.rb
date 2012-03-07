@@ -459,7 +459,7 @@ module Interactive
 
       def set_input_state(input)
         return nil unless input.tty?
-        before = Termio.getattr(input)
+        before = Termios.getattr(input)
 
         new = before.dup
         new.c_lflag &= ~(Termios::ECHO | Termios::ICANON)
