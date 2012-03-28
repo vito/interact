@@ -286,15 +286,16 @@ module Interactive
       # nothing
 
     when :tab
-      if choices = state.options[:choices]
-        matches = choices.select { |c| c.start_with? ans }
-
-        if matches.size == 1
-          ans = state.answer = matches[0].dup
-          state.display(ans[pos .. -1])
+      matches =
+        if choices = state.options[:choices]
+          choices.select { |c| c.start_with? ans }
         else
-          print("\a") # bell
+          matching_paths(ans)
         end
+
+      if matches.size == 1
+        ans = state.answer = matches[0].dup
+        state.display(ans[pos .. -1])
       else
         print("\a") # bell
       end
@@ -384,6 +385,14 @@ module Interactive
     end
 
     true
+  end
+
+  def matching_paths(input)
+    home = Dir.home
+
+    Dir.glob(input.sub("~", home) + "*").collect do |p|
+      p.sub(home, "~")
+    end
   end
 
   def prompt(question, options = {})
