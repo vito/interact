@@ -290,7 +290,7 @@ module Interactive
         matches = choices.select { |c| c.start_with? ans }
 
         if matches.size == 1
-          ans = state.answer = matches[0]
+          ans = state.answer = matches[0].dup
           state.display(ans[pos .. -1])
         else
           print("\a") # bell
