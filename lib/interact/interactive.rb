@@ -273,8 +273,6 @@ module Interactive
   end
 
   def handler(which, state)
-    echo = state.options[:echo]
-
     ans = state.answer
     pos = state.position
 
