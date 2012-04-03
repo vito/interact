@@ -489,22 +489,45 @@ module Interactive
         chr(input.getc)
       end
     rescue LoadError
-      def set_input_state(input)
-        return nil unless input.tty?
+      begin
+        require "ffi-ncurses"
 
-        before = `stty -g`
+        def set_input_state(input)
+          return nil unless input.tty?
 
-        system("stty -echo -icanon isig")
+          FFI::NCurses.initscr
+          FFI::NCurses.cbreak
 
-        before
-      end
+          true
+        end
 
-      def restore_input_state(input, before)
-        system("stty #{before}") if before
-      end
+        def restore_input_state(input, before)
+          if before
+            FFI::NCurses.endwin
+          end
+        end
 
-      def get_character(input)
-        chr(input.getc)
+        def get_character(input)
+          chr(input.getc)
+        end
+      rescue LoadError
+        def set_input_state(input)
+          return nil unless input.tty?
+
+          before = `stty -g`
+
+          system("stty -echo -icanon isig")
+
+          before
+        end
+
+        def restore_input_state(input, before)
+          system("stty #{before}") if before
+        end
+
+        def get_character(input)
+          chr(input.getc)
+        end
       end
     end
   end
