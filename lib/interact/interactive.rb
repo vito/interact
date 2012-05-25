@@ -386,7 +386,7 @@ module Interactive
   end
 
   def matching_paths(input)
-    home = Dir.home
+    home = File.expand_path("~")
 
     Dir.glob(input.sub("~", home) + "*").collect do |p|
       p.sub(home, "~")
