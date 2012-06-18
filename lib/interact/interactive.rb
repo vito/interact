@@ -250,7 +250,7 @@ module Interactive
       if matches.size == 1
         [true, matches.first]
       elsif choices and ans =~ /^\s*\d+\s*$/ and \
-              res = choices.to_a[ans.to_i - 1]
+              ans.to_i - 1 >= 0 and res = choices.to_a[ans.to_i - 1]
         [true, res]
       elsif matches.size > 1
         puts "Please disambiguate: #{matches.join " or "}?"
