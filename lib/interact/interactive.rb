@@ -245,7 +245,9 @@ module Interactive
         [true, options[:default]]
       end
     elsif choices = options[:choices]
-      matches = choices.select { |x| x.start_with? ans }
+      matches = choices.select { |x|
+        choice_completion(x, options).start_with? ans
+      }
 
       if matches.size == 1
         [true, matches.first]
@@ -268,8 +270,18 @@ module Interactive
     return unless options[:indexed]
 
     choices.each_with_index do |o, i|
-      puts "#{i + 1}: #{o}"
+      puts "#{i + 1}: #{show_choice(o, options)}"
     end
+  end
+
+  def show_choice(choice, options = {})
+    display = options[:display] || proc(&:to_s)
+    display.call(choice)
+  end
+
+  def choice_completion(choice, options = {})
+    complete = options[:complete] || proc(&:to_s)
+    complete.call(choice)
   end
 
   def handler(which, state)
@@ -286,7 +298,11 @@ module Interactive
     when :tab
       matches =
         if choices = state.options[:choices]
-          choices.select { |c| c.start_with? ans }
+          choices.collect { |c|
+            choice_completion(c, state.options)
+          }.select { |c|
+            c.start_with? ans
+          }
         else
           matching_paths(ans)
         end
