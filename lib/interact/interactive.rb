@@ -280,7 +280,7 @@ module Interactive
   end
 
   def choice_completion(choice, options = {})
-    complete = options[:complete] || proc(&:to_s)
+    complete = options[:complete] || options[:display] || proc(&:to_s)
     complete.call(choice)
   end
 
