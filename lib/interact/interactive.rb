@@ -289,6 +289,18 @@ module Interactive
     complete.call(choice)
   end
 
+  def common_prefix(*strs)
+    longest = strs.sort_by(&:size).last
+    longest.size.times do |i|
+      sub = longest[0..(-1 - i)]
+      if strs.all? { |s| s.start_with?(sub) }
+        return sub
+      end
+    end
+
+    ""
+  end
+
   def handler(which, state)
     ans = state.answer
     pos = state.position
@@ -316,6 +328,8 @@ module Interactive
         ans = state.answer = matches[0].dup
         state.display(ans[pos .. -1])
       else
+        ans = state.answer = common_prefix(*matches)
+        state.display(ans[pos .. -1])
         print("\a") # bell
       end
 
