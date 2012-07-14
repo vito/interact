@@ -255,7 +255,12 @@ module Interactive
               ans.to_i - 1 >= 0 and res = choices.to_a[ans.to_i - 1]
         [true, res]
       elsif matches.size > 1
-        puts "Please disambiguate: #{matches.join " or "}?"
+        matches_list = matches.collect { |m|
+          show_choice(m, options)
+        }.join " or "
+
+        puts "Please disambiguate: #{matches_list}?"
+
         [false, nil]
       else
         puts "Unknown answer, please try again!"
