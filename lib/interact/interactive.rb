@@ -549,13 +549,13 @@ module Interactive
 
           before = `stty -g`
 
-          system("stty -echo -icanon isig")
+          Kernel.system("stty -echo -icanon isig")
 
           before
         end
 
         def restore_input_state(input, before)
-          system("stty #{before}") if before
+          Kernel.system("stty #{before}") if before
         end
 
         def get_character(input)
