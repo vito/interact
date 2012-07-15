@@ -290,6 +290,8 @@ module Interactive
   end
 
   def common_prefix(*strs)
+    return strs.first.dup if strs.size == 1
+
     longest = strs.sort_by(&:size).last
     longest.size.times do |i|
       sub = longest[0..(-1 - i)]
@@ -324,16 +326,13 @@ module Interactive
           matching_paths(ans)
         end
 
-      if matches.size == 1
-        ans = state.answer = matches[0].dup
-        state.display(ans[pos .. -1])
-      else
-        unless matches.empty?
-          ans = state.answer = common_prefix(*matches)
-          state.display(ans[pos .. -1])
-        end
-
+      if matches.empty?
         print("\a") # bell
+      else
+        old = ans
+        ans = state.answer = common_prefix(*matches)
+        state.display(ans[pos .. -1])
+        print("\a") if ans == old
       end
 
     when :right
