@@ -328,8 +328,11 @@ module Interactive
         ans = state.answer = matches[0].dup
         state.display(ans[pos .. -1])
       else
-        ans = state.answer = common_prefix(*matches)
-        state.display(ans[pos .. -1])
+        unless matches.empty?
+          ans = state.answer = common_prefix(*matches)
+          state.display(ans[pos .. -1])
+        end
+
         print("\a") # bell
       end
 
