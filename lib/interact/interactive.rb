@@ -249,11 +249,11 @@ module Interactive
         choice_completion(x, options).start_with? ans
       }
 
-      if matches.size == 1
-        [true, matches.first]
-      elsif choices and ans =~ /^\s*\d+\s*$/ and \
-              ans.to_i - 1 >= 0 and res = choices.to_a[ans.to_i - 1]
+      if choices and ans =~ /^\s*\d+\s*$/ and \
+          ans.to_i - 1 >= 0 and res = choices.to_a[ans.to_i - 1]
         [true, res]
+      elsif matches.size == 1
+        [true, matches.first]
       elsif matches.size > 1
         matches_list = matches.collect { |m|
           show_choice(m, options)
