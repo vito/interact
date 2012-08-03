@@ -245,9 +245,17 @@ module Interactive
         [true, options[:default]]
       end
     elsif choices = options[:choices]
-      matches = choices.select { |x|
-        choice_completion(x, options).start_with? ans
-      }
+      matches = []
+
+      choices.each do |x|
+        completion = choice_completion(x, options)
+
+        if completion == ans
+          return [true, x]
+        elsif completion.start_with? ans
+          matches << ans
+        end
+      end
 
       if choices and ans =~ /^\s*\d+\s*$/ and \
           ans.to_i - 1 >= 0 and res = choices.to_a[ans.to_i - 1]
