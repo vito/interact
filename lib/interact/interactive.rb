@@ -477,7 +477,14 @@ module Interactive
   end
 
   def chr(x)
-    x && x.chr
+    case x
+    when nil
+      nil
+    when String
+      x
+    else
+      x.chr
+    end
   end
 
   private :chr
