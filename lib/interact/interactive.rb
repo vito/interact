@@ -270,6 +270,8 @@ module Interactive
         puts "Please disambiguate: #{matches_list}?"
 
         [false, nil]
+      elsif options[:allow_other]
+        [true, ans]
       else
         puts "Unknown answer, please try again!"
         [false, nil]
