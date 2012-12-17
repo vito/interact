@@ -89,5 +89,13 @@ module Interact
       code = "\e[2m"
       "#{code}#{str.to_s.gsub("\e[0m", "\e[0m#{code}")}\e[0m"
     end
+
+    # invert text
+    def i(str)
+      return str unless color?
+
+      code = "\e[7m"
+      "#{code}#{str.to_s.gsub("\e[0m", "\e[0m#{code}")}\e[0m"
+    end
   end
 end
