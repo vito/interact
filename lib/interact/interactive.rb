@@ -253,7 +253,7 @@ module Interactive
         if completion == ans
           return [true, x]
         elsif completion.start_with? ans
-          matches << ans
+          matches << x
         end
       end
 
