@@ -563,23 +563,44 @@ module Interactive
           chr(input.getc)
         end
       rescue LoadError
-        def set_input_state(input)
-          return nil unless input.tty?
+        begin
+          require 'java'
+          java_import 'jline.Terminal'
 
-          before = `stty -g`
+          def set_input_state(input)
+            nil
+          end
 
-          Kernel.system("stty -echo -icanon isig")
+          def restore_input_state(input, before)
+            nil
+          end
 
-          before
+          def get_character(input)
+            chr(Terminal.getTerminal.readCharacter(java.lang.System.in))
+          end
+        rescue LoadError
+
+          def set_input_state(input)
+            return nil unless input.tty?
+
+            before = `stty -g`
+
+            Kernel.system("stty -echo -icanon isig")
+
+            before
+          end
+
+          def restore_input_state(input, before)
+            Kernel.system("stty #{before}") if before
+          end
+
+          def get_character(input)
+            chr(input.getc)
+          end
         end
 
-        def restore_input_state(input, before)
-          Kernel.system("stty #{before}") if before
-        end
-
-        def get_character(input)
-          chr(input.getc)
-        end
+      else
+        
       end
     end
   end
