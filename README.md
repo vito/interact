@@ -14,7 +14,7 @@ require "rubygems"
 require "interact"
 
 class MyInteractiveClass
-  include Interactive
+  include Interactive::Rewindable
 
   def run
     first = ask "Some question?"
