@@ -13,7 +13,8 @@ spec = Gem::Specification.new do |s|
 
   s.platform = Gem::Platform::RUBY
   s.extra_rdoc_files = ["README.md", "LICENSE"]
-
+  s.license = "BSD"
+  
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec",   "~> 2.0"
 
