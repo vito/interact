@@ -3,7 +3,7 @@
 Another interaction library for Ruby, with an interesting twist: the user can
 go back in time to re-answer questions.
 
-*Copyright 2011, Alex Suraci. Licensed under the MIT license, please see the
+*Copyright 2011, Alex Suraci. Licensed under BSD license, please see the
 LICENSE file. All rights reserved.*
 
 
