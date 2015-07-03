@@ -3,17 +3,6 @@
 module Interactive::Rewindable
   include Interactive
 
-  if defined? callcc
-    HAS_CALLCC = true #:nodoc:
-  else
-    begin
-      require "continuation"
-      HAS_CALLCC = true #:nodoc:
-    rescue LoadError
-      HAS_CALLCC = false #:nodoc:
-    end
-  end
-
   class JumpToPrompt < Exception #:nodoc:
     def initialize(prompt)
       @prompt = prompt
@@ -37,13 +26,7 @@ module Interactive::Rewindable
   # forget::
   #   Set to +true+ to prevent rewinding from remembering the user's answer.
   def ask(question, options = {})
-    rewind = HAS_CALLCC
-
-    if rewind
-      prompt, answer = callcc { |cc| [cc, nil] }
-    else
-      prompt, answer = nil, nil
-    end
+    prompt, answer = nil, nil
 
     if answer
       options[:default] = answer
